@@ -15,5 +15,13 @@ brew install fabianhassler/tap/fig2dev-rs
 ```
 
 Homebrew's X11 `xfig` also installs an `xfig` command: `brew unlink xfig`
-first if you have it. Likewise `fig2dev-rs` and Homebrew's C `fig2dev` both
-install `fig2dev`: keep one of them linked. `xfig-qt` uses the C `fig2dev`.
+first if you have it. Likewise `fig2dev-rs`, `rustfig --with-fig2dev` and
+Homebrew's C `fig2dev` all install `fig2dev`: keep one of them linked.
+
+`xfig-qt` uses the C `fig2dev` by default. To run it on RustFig's instead:
+
+```sh
+brew uninstall --ignore-dependencies fig2dev   # if installed
+brew install fabianhassler/tap/rustfig --with-fig2dev
+brew install fabianhassler/tap/xfig-qt --without-fig2dev
+```

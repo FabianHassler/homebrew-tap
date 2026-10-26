@@ -9,6 +9,8 @@ class Rustfig < Formula
   ]
   head "https://github.com/FabianHassler/rustfig.git", branch: "main"
 
+  option "with-fig2dev", "Also install RustFig's fig2dev as `fig2dev` (replaces Homebrew's fig2dev)"
+
   depends_on "rust" => :build
   depends_on "ghostscript" => :recommended
 
@@ -23,12 +25,17 @@ class Rustfig < Formula
   def install
     system "cargo", "install", *std_cargo_args(path: "apps/rustfig")
     system "cargo", "install", *std_cargo_args(path: "apps/cli")
+    # started under the name fig2dev, rustfig runs fig2dev's command line
+    bin.install_symlink "rustfig" => "fig2dev" if build.with? "fig2dev"
   end
 
   def caveats
     <<~EOS
       RustFig runs fig2dev's command line as `rustfig fig2dev ARGS...`.
-      For a plain `fig2dev` command, install fabianhassler/tap/fig2dev-rs.
+      For a plain `fig2dev` command, install with --with-fig2dev (a link
+      to rustfig) or install fabianhassler/tap/fig2dev-rs. Either replaces
+      Homebrew's fig2dev: `brew unlink fig2dev` first. xfig-qt can then use
+      it when installed with --without-fig2dev.
     EOS
   end
 
@@ -49,5 +56,9 @@ class Rustfig < Formula
     system bin/"rustfig-cli", "info", "box.fig"
     system bin/"rustfig", "fig2dev", "-L", "eps", "box.fig", "box.eps"
     assert_match "%!PS-Adobe", (testpath/"box.eps").read
+    if build.with? "fig2dev"
+      system bin/"fig2dev", "-L", "svg", "box.fig", "box.svg"
+      assert_match "<svg", (testpath/"box.svg").read
+    end
   end
 end

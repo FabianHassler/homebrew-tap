@@ -8,15 +8,15 @@ class XfigQt < Formula
 
   depends_on "cmake" => :build
   depends_on "pkgconf" => :build
-  depends_on "fig2dev"
   depends_on "fontconfig"
   depends_on "freetype"
-  depends_on "ghostscript" => :recommended
   depends_on "jpeg-turbo"
   depends_on "libpng"
   depends_on "libtiff"
   depends_on :macos
   depends_on "qt"
+  depends_on "fig2dev" => :recommended
+  depends_on "ghostscript" => :recommended
 
   conflicts_with "xfig", because: "both install an `xfig` executable"
 
@@ -36,6 +36,9 @@ class XfigQt < Formula
       Ghostscript is recommended: with it, PDF, bitmap export and printing
       are made from fig2dev's PostScript, and EPS pictures get a preview.
       Without it (--without-ghostscript), they are drawn from fig2dev's SVG.
+
+      xfig-qt runs the first fig2dev on PATH. With --without-fig2dev it uses
+      another one, e.g. RustFig's: brew install fabianhassler/tap/rustfig --with-fig2dev
     EOS
   end
 
