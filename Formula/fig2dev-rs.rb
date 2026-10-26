@@ -1,8 +1,8 @@
 class Fig2devRs < Formula
   desc "Fig2dev, the xfig figure converter, ported to Rust"
   homepage "https://github.com/FabianHassler/fig2dev"
-  url "https://github.com/FabianHassler/fig2dev/archive/refs/tags/v0.9.1.tar.gz"
-  sha256 "419446ba2b6d88b0f5094ed31664c75db56c1ef3cb033a799d8bece42bce5d52"
+  url "https://github.com/FabianHassler/fig2dev/archive/refs/tags/v0.9.2.tar.gz"
+  sha256 "223fed5a7e30608d6fe164022dbe47f425d89becc77d33075f7a5266721c5a2d"
   license all_of: [
     "Xfig",
     any_of: ["MIT", "Apache-2.0"],
