@@ -25,6 +25,8 @@ class Rustfig < Formula
   def install
     system "cargo", "install", *std_cargo_args(path: "apps/rustfig")
     system "cargo", "install", *std_cargo_args(path: "apps/cli")
+    # the figure libraries, found as ../share/rustfig/libraries
+    (share/"rustfig").install "libraries"
     # started under the name fig2dev, rustfig runs fig2dev's command line
     bin.install_symlink "rustfig" => "fig2dev" if build.with? "fig2dev"
   end
@@ -54,6 +56,7 @@ class Rustfig < Formula
       \t 0 0 1200 0 1200 1200 0 1200 0 0
     FIG
     system bin/"rustfig-cli", "info", "box.fig"
+    assert_path_exists share/"rustfig/libraries/Feynman/fermion.fig"
     system bin/"rustfig", "fig2dev", "-L", "eps", "box.fig", "box.eps"
     assert_match "%!PS-Adobe", (testpath/"box.eps").read
     if build.with? "fig2dev"
