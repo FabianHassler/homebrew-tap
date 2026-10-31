@@ -1,8 +1,8 @@
 class Rustfig < Formula
   desc "Drawing program reimplementing xfig, with fig2dev built in"
   homepage "https://github.com/FabianHassler/rustfig"
-  url "https://github.com/FabianHassler/rustfig/archive/refs/tags/v0.9.0-beta.5.tar.gz"
-  sha256 "bf53d798fbeaa97b6977dc30ef4eda94dc48d9d8d598b098ba83d00fa332a4be"
+  url "https://github.com/FabianHassler/rustfig/archive/refs/tags/v0.9.0-beta.6.tar.gz"
+  sha256 "67f97271a5a9364a98f4d4282970c96898417e4ec8f18556e3775997cafe8d44"
   license all_of: [
     "Xfig",
     any_of: ["MIT", "Apache-2.0"],
@@ -10,6 +10,7 @@ class Rustfig < Formula
   head "https://github.com/FabianHassler/rustfig.git", branch: "main"
 
   option "with-fig2dev", "Also install RustFig's fig2dev as `fig2dev` (replaces Homebrew's fig2dev)"
+  option "with-xfig", "Also install an `xfig` command that starts RustFig (replaces Homebrew's xfig)"
 
   depends_on "rust" => :build
   depends_on "ghostscript" => :recommended
@@ -29,6 +30,8 @@ class Rustfig < Formula
     (share/"rustfig").install "libraries"
     # started under the name fig2dev, rustfig runs fig2dev's command line
     bin.install_symlink "rustfig" => "fig2dev" if build.with? "fig2dev"
+    # xfig's command line works as is: `xfig file.fig` opens RustFig
+    bin.install_symlink "rustfig" => "xfig" if build.with? "xfig"
   end
 
   def caveats
@@ -38,6 +41,7 @@ class Rustfig < Formula
       to rustfig) or install fabianhassler/tap/fig2dev-rs. Either replaces
       Homebrew's fig2dev: `brew unlink fig2dev` first. xfig-qt can then use
       it when installed with --without-fig2dev.
+      With --with-xfig, `xfig` starts RustFig (unlink Homebrew's xfig first).
     EOS
   end
 
@@ -59,6 +63,7 @@ class Rustfig < Formula
     assert_path_exists share/"rustfig/libraries/Feynman/fermion.fig"
     system bin/"rustfig", "fig2dev", "-L", "eps", "box.fig", "box.eps"
     assert_match "%!PS-Adobe", (testpath/"box.eps").read
+    system bin/"xfig", "-help" if build.with? "xfig"
     if build.with? "fig2dev"
       system bin/"fig2dev", "-L", "svg", "box.fig", "box.svg"
       assert_match "<svg", (testpath/"box.svg").read
