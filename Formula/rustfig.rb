@@ -1,8 +1,8 @@
 class Rustfig < Formula
   desc "Drawing program reimplementing xfig, with fig2dev built in"
   homepage "https://github.com/FabianHassler/rustfig"
-  url "https://github.com/FabianHassler/rustfig/archive/refs/tags/v0.9.0-beta.6.tar.gz"
-  sha256 "67f97271a5a9364a98f4d4282970c96898417e4ec8f18556e3775997cafe8d44"
+  url "https://github.com/FabianHassler/rustfig/archive/refs/tags/v0.9.0-beta.7.tar.gz"
+  sha256 "fac4fcca0f1ba064cffa9289d9f43d1ccb2f6c789ea6c44fc3beafcfeaad32f6"
   license all_of: [
     "Xfig",
     any_of: ["MIT", "Apache-2.0"],
