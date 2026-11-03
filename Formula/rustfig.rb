@@ -86,26 +86,6 @@ class Rustfig < Formula
     end
   end
 
-  # register the app and its Quick Look extensions with macOS
-  post_install_steps do
-    on_macos do
-      if_path_exists "RustFig.app", base: :opt_prefix do
-        run "/System/Library/Frameworks/CoreServices.framework/Frameworks/" \
-            "LaunchServices.framework/Support/lsregister",
-            args:         ["-f", "{{HOMEBREW_PREFIX}}/opt/rustfig/RustFig.app"],
-            must_succeed: false
-        run "/usr/bin/pluginkit",
-            args:         ["-a", "{{HOMEBREW_PREFIX}}/opt/rustfig/RustFig.app/Contents/PlugIns/" \
-                                 "RustFigThumbnail.appex"],
-            must_succeed: false
-        run "/usr/bin/pluginkit",
-            args:         ["-a", "{{HOMEBREW_PREFIX}}/opt/rustfig/RustFig.app/Contents/PlugIns/" \
-                                 "RustFigPreview.appex"],
-            must_succeed: false
-      end
-    end
-  end
-
   def caveats
     <<~EOS
       RustFig runs fig2dev's command line as `rustfig fig2dev ARGS...`.
@@ -118,7 +98,9 @@ class Rustfig < Formula
         #{opt_prefix}/RustFig.app
       (from beta.9 on, and with --HEAD). For Launchpad and Spotlight, link it:
         ln -sf #{opt_prefix}/RustFig.app ~/Applications/
-      If thumbnails do not appear, open the app once or run: qlmanage -r
+      Open the app once, so that macOS registers its Quick Look extensions
+      (Finder thumbnails, space-bar preview):
+        open #{opt_prefix}/RustFig.app
       The cask fabianhassler/tap/rustfig installs the same app into
       /Applications: use one of the two.
       On Linux, file managers show .fig thumbnails when Homebrew's share
