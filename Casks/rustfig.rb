@@ -11,6 +11,8 @@ cask "rustfig" do
   depends_on macos: :monterey
 
   app "RustFig.app"
+  # fig2dev's command line (the app runs it when started as `fig2dev`)
+  binary "#{appdir}/RustFig.app/Contents/MacOS/fig2dev"
 
   caveats <<~EOS
     RustFig is not signed by Apple. If macOS refuses to open it, install with
@@ -19,6 +21,9 @@ cask "rustfig" do
 
     Open RustFig once so that macOS registers its Quick Look extensions
     (thumbnails in the Finder, space bar preview for .fig files).
-    The command-line tools come with the formula: brew install fabianhassler/tap/rustfig
+    The cask installs a `fig2dev` command (RustFig's fig2dev). It cannot sit
+    beside Homebrew's C fig2dev or fabianhassler/tap/fig2dev-rs, which install
+    `fig2dev` too: uninstall or unlink those first.
+    The other command-line tools come with the formula: brew install fabianhassler/tap/rustfig
   EOS
 end
