@@ -23,10 +23,29 @@ class Rustfig < Formula
     depends_on "wayland"
   end
 
+  # From beta.9 on, rustfig is one program: started as rustfig-cli it runs the
+  # command line, and `cargo xtask package --app-only` builds the macOS app.
+  def one_program?
+    build.head? || version > Version.new("0.9.0-beta.8")
+  end
+
   def install
-    system "cargo", "install", *std_cargo_args(path: "apps/rustfig")
-    system "cargo", "install", *std_cargo_args(path: "apps/cli")
-    # the figure libraries, found as ../share/rustfig/libraries
+    if OS.mac? && one_program?
+      # RustFig.app with the Quick Look extensions (Finder thumbnails and the
+      # space-bar preview of .fig files); bin/rustfig is the app's program
+      system "cargo", "run", "--release", "--locked", "-p", "xtask", "--", "package", "--app-only"
+      prefix.install "target/package/RustFig.app"
+      bin.install_symlink prefix/"RustFig.app/Contents/MacOS/rustfig"
+    else
+      system "cargo", "install", *std_cargo_args(path: "apps/rustfig")
+    end
+    if one_program?
+      bin.install_symlink "rustfig" => "rustfig-cli"
+    else
+      system "cargo", "install", *std_cargo_args(path: "apps/cli")
+    end
+    # the figure libraries, found as ../share/rustfig/libraries (the app finds
+    # them from RustFig.app/Contents/MacOS too)
     (share/"rustfig").install "libraries"
     # started under the name fig2dev, rustfig runs fig2dev's command line
     bin.install_symlink "rustfig" => "fig2dev" if build.with? "fig2dev"
@@ -67,6 +86,26 @@ class Rustfig < Formula
     end
   end
 
+  # register the app and its Quick Look extensions with macOS
+  post_install_steps do
+    on_macos do
+      if_path_exists "RustFig.app", base: :opt_prefix do
+        run "/System/Library/Frameworks/CoreServices.framework/Frameworks/" \
+            "LaunchServices.framework/Support/lsregister",
+            args:         ["-f", "{{HOMEBREW_PREFIX}}/opt/rustfig/RustFig.app"],
+            must_succeed: false
+        run "/usr/bin/pluginkit",
+            args:         ["-a", "{{HOMEBREW_PREFIX}}/opt/rustfig/RustFig.app/Contents/PlugIns/" \
+                                 "RustFigThumbnail.appex"],
+            must_succeed: false
+        run "/usr/bin/pluginkit",
+            args:         ["-a", "{{HOMEBREW_PREFIX}}/opt/rustfig/RustFig.app/Contents/PlugIns/" \
+                                 "RustFigPreview.appex"],
+            must_succeed: false
+      end
+    end
+  end
+
   def caveats
     <<~EOS
       RustFig runs fig2dev's command line as `rustfig fig2dev ARGS...`.
@@ -75,8 +114,13 @@ class Rustfig < Formula
       Homebrew's fig2dev: `brew unlink fig2dev` first. xfig-qt can then use
       it when installed with --without-fig2dev.
       With --with-xfig, `xfig` starts RustFig (unlink Homebrew's xfig first).
-      On macOS, the app with Quick Look previews of .fig files comes as a
-      cask: brew install --cask fabianhassler/tap/rustfig
+      On macOS, RustFig.app with Quick Look previews of .fig files is in
+        #{opt_prefix}/RustFig.app
+      (from beta.9 on, and with --HEAD). For Launchpad and Spotlight, link it:
+        ln -sf #{opt_prefix}/RustFig.app ~/Applications/
+      If thumbnails do not appear, open the app once or run: qlmanage -r
+      The cask fabianhassler/tap/rustfig installs the same app into
+      /Applications: use one of the two.
       On Linux, file managers show .fig thumbnails when Homebrew's share
       folder is on XDG_DATA_DIRS, e.g. in ~/.profile:
         export XDG_DATA_DIRS="$(brew --prefix)/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
