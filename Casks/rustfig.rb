@@ -8,7 +8,7 @@ cask "rustfig" do
   homepage "https://github.com/FabianHassler/rustfig"
 
   depends_on arch: :arm64
-  depends_on macos: ">= :monterey"
+  depends_on macos: :monterey
 
   app "RustFig.app"
 
