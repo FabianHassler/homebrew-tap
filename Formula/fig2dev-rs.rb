@@ -10,7 +10,7 @@ class Fig2devRs < Formula
   head "https://github.com/FabianHassler/fig2dev.git", branch: "main"
 
   depends_on "rust" => :build
-  depends_on "ghostscript" => :recommended
+  depends_on "ghostscript" => :optional
 
   conflicts_with "fig2dev", because: "both install a `fig2dev` executable"
 

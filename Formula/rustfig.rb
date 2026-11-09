@@ -13,7 +13,7 @@ class Rustfig < Formula
   option "with-xfig", "Also install an `xfig` command that starts RustFig (replaces Homebrew's xfig)"
 
   depends_on "rust" => :build
-  depends_on "ghostscript" => :recommended
+  depends_on "ghostscript" => :optional
 
   on_linux do
     depends_on "pkgconf" => :build
@@ -107,6 +107,9 @@ class Rustfig < Formula
       folder is on XDG_DATA_DIRS, e.g. in ~/.profile:
         export XDG_DATA_DIRS="$(brew --prefix)/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
       then run: update-mime-database "$(brew --prefix)/share/mime"
+      Ghostscript is only needed to show EPS pictures inside figures (canvas,
+      PDF and bitmap exports): `brew install ghostscript`, or reinstall with
+      --with-ghostscript.
     EOS
   end
 
