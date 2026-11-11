@@ -1,6 +1,6 @@
 cask "rustfig" do
-  version "0.9.0-beta.8"
-  sha256 "f98d4abeff8ce206d48d91b397d61ebcf7a989e9be479f5414e581c7aadaec8e"
+  version "0.9.0-beta.10"
+  sha256 "a2cbef3fd951093abd7dd52c4c0e839f4305ada57eabed53dc6a94670b32aff1"
 
   url "https://github.com/FabianHassler/rustfig/releases/download/v#{version}/RustFig-#{version}-macos.dmg"
   name "RustFig"
